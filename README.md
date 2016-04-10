@@ -1,4 +1,4 @@
-Quantbolome [![Build Status](https://travis-ci.org/informationsea/Quantbolome.sv g?branch=master)](https://travis-ci.org/informationsea/Quantbolome)
+Quantbolome [![Build Status](https://travis-ci.org/informationsea/Quantbolome.svg?branch=master)](https://travis-ci.org/informationsea/Quantbolome)
 ==============
 
 Data correction software for quantitative global metabolomics
