@@ -1,0 +1,64 @@
+apply plugin: 'maven-publish'
+apply plugin: 'application'
+
+mainClassName = 'jp.ac.tohoku.ecei.sb.metabolome.lims.gui.MetabolomeAnalysis'
+
+dependencies {
+    compile project(":metabolome-lims-core")
+    compile project(":metabolome-lims-impl")
+    compile project(":metabolome-lims-progenesis")
+    compile project(":metabolomeqc-cli")
+    compile 'org.jfree:jfreechart:1.0.19'
+    compile 'org.jfree:fxgraphics2d:1.1'
+    compile 'com.mkobos:pca_transform:1.0.2'
+    compile 'info.informationsea.commandmanager:commandmanager-gui:0.0.6'
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            // change to point to your repo, e.g. http://my.org/repo
+            url "$buildDir/repo"
+        }
+    }
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class' : mainClassName
+    }
+    from configurations.compile.collect {it.isDirectory() ? it : zipTree(it)}
+}
+
+task nativePackage(dependsOn: jar) << {
+    file("$buildDir/deploy").mkdirs()
+
+    if (System.getProperty("os.name") == "Mac OS X") {
+        exec {
+            executable System.getProperty("java.home") + "/../bin/javapackager"
+            args "-deploy", "-title", project.name, "-name", project.name, "-appclass", mainClassName,
+                    "-native", "installer", "-outdir", "$buildDir/deploy", "-outfile", project.name,
+                    "-srcdir", "$buildDir/libs", "-srcfiles", "${project.name}-${project.version}.jar"
+        }
+    }
+}
+
+task createExecutable(dependsOn: jar) << {
+    def executableFile = file("$buildDir/deploy/${project.name}")
+    executableFile.parentFile.mkdirs()
+
+    def output = new FileOutputStream(executableFile)
+    output.write(("#!/bin/sh\n" +
+            "\n" +
+            "exec java -jar \$0 \"\$@\"\n").bytes)
+    output.write file("$buildDir/libs/${project.name}-${project.version}.jar").bytes
+    output.close()
+    executableFile.executable = true
+}
+
+//build.dependsOn fatCapsule

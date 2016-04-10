@@ -1,0 +1,47 @@
+apply plugin: 'java'
+apply plugin: 'jacoco'
+apply plugin:'application'
+
+mainClassName = 'jp.ac.tohoku.ecei.sb.metabolomeqc.cli.MetabolomeQC'
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+    compile project(":metabolomeqc-core")
+    compile project(":metabolomeqc-correctors")
+    compile project(":metabolome-lims-progenesis")
+    compile 'args4j:args4j:2.32'
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class' : mainClassName
+    }
+}
+
+def executableBaseName = "metabolomeqc-cli"
+
+task executableJar(type: Jar, dependsOn: jar)  {
+    archiveName = "${executableBaseName}.jar"
+    manifest {
+        attributes 'Main-Class' : mainClassName
+    }
+
+    from configurations.compile.collect {it.isDirectory() ? it : zipTree(it)}
+    from "$buildDir/classes/main"
+    from "$buildDir/resources/main"
+    from "$buildDir/version"
+}
+
+task createExecutable(dependsOn: executableJar) << {
+    def executableFile = file("$buildDir/deploy/${executableBaseName}")
+    executableFile.parentFile.mkdirs()
+
+    def output = new FileOutputStream(executableFile)
+    output.write(("#!/bin/sh\n" +
+            "\n" +
+            "exec java -Xms2048m -Xmx4096m -jar \$0 \"\$@\"\n").bytes)
+    output.write file("$libsDir/${executableBaseName}.jar").bytes
+    output.close()
+    executableFile.executable = true
+}
+

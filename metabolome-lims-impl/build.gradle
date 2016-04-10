@@ -1,0 +1,28 @@
+apply plugin: 'maven-publish'
+
+dependencies {
+    compile project(":metabolome-lims-core")
+    compile 'com.h2database:h2:1.4.186'
+    compile 'org.projectlombok:lombok:1.16.2'
+    compile 'com.j256.ormlite:ormlite-core:4.48'
+    compile 'com.j256.ormlite:ormlite-jdbc:4.48'
+    compile 'info.informationsea.dataclustering4j:dataclustering4j-core:0.0.6'
+    compile 'net.sf.opencsv:opencsv:2.3'
+    compile 'org.json:json:20141113'
+    compile 'info.informationsea.tableio:tableio-csv:0.1.1'
+    compile 'info.informationsea.tableio:tableio-excel:0.1.1'
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            // change to point to your repo, e.g. http://my.org/repo
+            url "$buildDir/repo"
+        }
+    }
+}

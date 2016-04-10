@@ -1,0 +1,2 @@
+"OPERATOR","WORKERCLASSNAME","DATE","CONTENT","ID","ATTRIBUTEJSON"
+"yasu","jp.ac.tohoku.ecei.sb.metabolome.lims.CSVDataLoader","2015-06-09 14:22:23.079","storeToCSVData","1","{""Export Dir"":""/Users/yasu/Documents/School/KinoshitaLab/2015/04-MetabolomeLIMS/MetabolomeLIMS/metabolome-lims-impl/build/test-data/data-manager-test-csv""}"

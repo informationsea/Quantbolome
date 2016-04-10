@@ -1,0 +1,10 @@
+include 'metabolome-lims-core'
+include 'metabolome-lims-shell'
+include 'metabolome-lims-gui'
+include 'metabolome-lims-impl'
+include 'metabolome-lims-progenesis'
+include 'metabolomeqc-core'
+include 'metabolomeqc-cli'
+include 'metabolomeqc-correctors'
+
+rootProject.name = 'Quantbolome'

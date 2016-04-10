@@ -1,0 +1,3 @@
+"OPERATOR","WORKERCLASSNAME","DATE","CONTENT","ID","ATTRIBUTEJSON"
+"yasu","jp.ac.tohoku.ecei.sb.metabolome.lims.progenesis.ProgenesisLoader","2015-06-09 21:48:17.972","loadFromProgenesisAndSampleInfo","1","{}"
+"yasu","jp.ac.tohoku.ecei.sb.metabolome.lims.CSVDataLoader","2015-06-09 21:48:18.568","storeToCSVData","2","{""Export Dir"":""/Users/yasu/Documents/School/KinoshitaLab/2015/04-MetabolomeLIMS/metabolome-metapackage2/./metabolomeqc-next/metabolomeqc-correctors/src/test/resources/jp/ac/tohoku/ecei/sb/metabolomeqc/test/basiccorrector/flat-measure-nodrift""}"
