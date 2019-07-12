@@ -44,7 +44,7 @@ public class RegressionIntensityCorrectorTest {
         IntensityMatrix mim = dataManager.getIntensityMatrix();
 
         new LogarithmIntensityCorrector(2, 1).doCorrection(dataManager);
-        new RegressionIntensityCorrector(50).doCorrection(dataManager);
+        new RegressionIntensityCorrector(50, new File("")).doCorrection(dataManager);
         IntensityMatrix corrected = dataManager.getIntensityMatrix();
 
         // write data

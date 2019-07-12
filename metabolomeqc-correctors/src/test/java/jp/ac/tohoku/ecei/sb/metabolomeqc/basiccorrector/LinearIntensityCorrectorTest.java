@@ -47,7 +47,7 @@ public class LinearIntensityCorrectorTest {
         IntensityMatrixImpl subset = new IntensityMatrixImpl(mim, 0, mim.getSize()[0], 0, 107+117);
         dataManager.setIntensityMatrix(subset);
         new LogarithmIntensityCorrector(2, 1).doCorrection(dataManager);
-        new LinearIntensityCorrector(Arrays.asList(new InjectionImpl[]{})).doCorrection(dataManager);
+        new LinearIntensityCorrector(Arrays.asList(new InjectionImpl[]{}), new File("")).doCorrection(dataManager);
         IntensityMatrix corrected = dataManager.getIntensityMatrix();
 
         // write data

@@ -43,7 +43,7 @@ public class BasicIntensityCorrectorTest {
         CSVDataLoader.loadFromCSVData(new File(getClass().getResource("flat-measure-nodrift").getFile()), dataManager);
 
         new LogarithmIntensityCorrector(2, 1).doCorrection(dataManager);
-        new BasicIntensityCorrector(50).doCorrection(dataManager);
+        new BasicIntensityCorrector(50, new File("")).doCorrection(dataManager);
         IntensityMatrix corrected = dataManager.getIntensityMatrix();
 
         // write data
