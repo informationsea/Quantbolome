@@ -20,13 +20,17 @@ package jp.ac.tohoku.ecei.sb.metabolomeqc.basiccorrector;
 
 import jp.ac.tohoku.ecei.sb.metabolome.lims.data.*;
 import jp.ac.tohoku.ecei.sb.metabolome.lims.impl.IntensityMatrixImpl;
+import jp.ac.tohoku.ecei.sb.metabolomeqc.basiccorrector.helper.FixedBaseIntensityLoader;
 import jp.ac.tohoku.ecei.sb.metabolomeqc.basiccorrector.helper.GlobalQCMedianCalculator;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.math3.stat.regression.RegressionResults;
 import org.apache.commons.math3.stat.regression.SimpleRegression;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -42,12 +46,19 @@ import java.util.stream.Stream;
  */
 @NoArgsConstructor @Slf4j
 public class RegressionIntensityCorrector extends IntensityCorrectorWithBadSamples {
-    public RegressionIntensityCorrector(List<Injection> badInjections) {
+
+    @Getter
+    @Setter
+    private File fixedBaseIntensity = null;
+
+    public RegressionIntensityCorrector(List<Injection> badInjections, File fixedBaseIntensity) {
         setBadInjections(badInjections);
+        setFixedBaseIntensity(fixedBaseIntensity);
     }
 
-    public RegressionIntensityCorrector(int badThreshold) {
-        setBadQCThreshold(badThreshold);
+    public RegressionIntensityCorrector(int badQCThreshold, File fixedBaseIntensity) {
+        setBadQCThreshold(badQCThreshold);
+        setFixedBaseIntensity(fixedBaseIntensity);
     }
 
     @Override
@@ -68,6 +79,11 @@ public class RegressionIntensityCorrector extends IntensityCorrectorWithBadSampl
 
         // median of SQCs for compounds
         Map<Compound, Double> medianForCompounds = GlobalQCMedianCalculator.calcGlobalQCMedian(original, badInjections);
+        if (!fixedBaseIntensity.getPath().isEmpty()) {
+            for (Map.Entry<Compound, Double> one: FixedBaseIntensityLoader.loadFixedBaseIntensity(fixedBaseIntensity).entrySet()) {
+                medianForCompounds.put(one.getKey(), one.getValue());
+            }
+        }
 
         // do correction
         Map<Plate, Map<Sample.SampleType, List<Injection>>> map = original.getInjectionsByPlateAndType();

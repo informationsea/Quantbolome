@@ -23,10 +23,9 @@ import jp.ac.tohoku.ecei.sb.metabolome.lims.data.Injection;
 import jp.ac.tohoku.ecei.sb.metabolome.lims.data.IntensityMatrix;
 import jp.ac.tohoku.ecei.sb.metabolome.lims.impl.IntensityMatrixImpl;
 import jp.ac.tohoku.ecei.sb.metabolomeqc.basiccorrector.helper.NeighboringGlobalQCFinder;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -47,8 +46,12 @@ public class AdaptiveIntensityCorrector extends IntensityCorrectorWithBadSamples
         REGRESSION_CORRECTION
     }
 
-    public AdaptiveIntensityCorrector(int badQCThreshold) {
-        this.badQCThreshold = badQCThreshold;
+    @Getter @Setter
+    private File fixedBaseIntensity = null;
+
+    public AdaptiveIntensityCorrector(int badQCThreshold, File fixedBaseIntensity) {
+        setBadQCThreshold(badQCThreshold);
+        setFixedBaseIntensity(fixedBaseIntensity);
     }
 
 
@@ -69,8 +72,8 @@ public class AdaptiveIntensityCorrector extends IntensityCorrectorWithBadSamples
             }
         }
 
-        IntensityMatrix linearCorrected = new LinearIntensityCorrector(badInjections).doCorrection(originalMatrix);
-        IntensityMatrix regressionCorrected = new RegressionIntensityCorrector(badInjections).doCorrection(originalMatrix);
+        IntensityMatrix linearCorrected = new LinearIntensityCorrector(badInjections, fixedBaseIntensity).doCorrection(originalMatrix);
+        IntensityMatrix regressionCorrected = new RegressionIntensityCorrector(badInjections, fixedBaseIntensity).doCorrection(originalMatrix);
 
         if (linearCorrected.getSize()[1] != regressionCorrected.getSize()[1]) {
             throw new RuntimeException("the dimension of a linear corrected matrix and a regression corrected matrix should be equal");

@@ -20,17 +20,18 @@ package jp.ac.tohoku.ecei.sb.metabolomeqc.basiccorrector;
 
 import jp.ac.tohoku.ecei.sb.metabolome.lims.data.Injection;
 import jp.ac.tohoku.ecei.sb.metabolome.lims.data.IntensityMatrix;
+import lombok.Getter;
+import lombok.Setter;
 
+import java.io.File;
 import java.util.List;
 
 /**
  * This class assume input matrix was log corrected
  */
 public class BasicIntensityCorrector extends AdaptiveIntensityCorrector {
-
-    public BasicIntensityCorrector(int badQCThreshold) {
-        super();
-        setBadQCThreshold(badQCThreshold);
+    public BasicIntensityCorrector(int badQCThreshold, File fixedBaseIntensity) {
+        super(badQCThreshold, fixedBaseIntensity);
     }
 
     @Override

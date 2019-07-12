@@ -22,12 +22,16 @@ import jp.ac.tohoku.ecei.sb.metabolome.lims.data.Compound;
 import jp.ac.tohoku.ecei.sb.metabolome.lims.data.Injection;
 import jp.ac.tohoku.ecei.sb.metabolome.lims.data.IntensityMatrix;
 import jp.ac.tohoku.ecei.sb.metabolome.lims.impl.IntensityMatrixImpl;
+import jp.ac.tohoku.ecei.sb.metabolomeqc.basiccorrector.helper.FixedBaseIntensityLoader;
 import jp.ac.tohoku.ecei.sb.metabolomeqc.basiccorrector.helper.GlobalQCMedianCalculator;
 import jp.ac.tohoku.ecei.sb.metabolomeqc.basiccorrector.helper.NeighboringGlobalQCFinder;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 
@@ -38,12 +42,19 @@ import java.util.Map;
 @NoArgsConstructor
 public class LinearIntensityCorrector extends IntensityCorrectorWithBadSamples {
 
-    public LinearIntensityCorrector(int badQCThreshold) {
+
+    @Getter
+    @Setter
+    private File fixedBaseIntensity = null;
+
+    public LinearIntensityCorrector(int badQCThreshold, File fixedBaseIntensity) {
         setBadQCThreshold(badQCThreshold);
+        setFixedBaseIntensity(fixedBaseIntensity);
     }
 
-    public LinearIntensityCorrector(List<Injection> badInjections) {
+    public LinearIntensityCorrector(List<Injection> badInjections, File fixedBaseIntensity) {
         setBadInjections(badInjections);
+        setFixedBaseIntensity(fixedBaseIntensity);
     }
 
     @Override
@@ -54,6 +65,12 @@ public class LinearIntensityCorrector extends IntensityCorrectorWithBadSamples {
         // Calculate SQC median
         Map<Compound, Double> compoundIntensityBase = GlobalQCMedianCalculator.calcGlobalQCMedian(original, badInjections);
         Map<Injection, NeighboringGlobalQCFinder.NeighboringGlobalQC> neighboringSQC = NeighboringGlobalQCFinder.findNeighboringSQC(original, badInjections);
+
+        if (!fixedBaseIntensity.getPath().isEmpty()) {
+            for (Map.Entry<Compound, Double> one: FixedBaseIntensityLoader.loadFixedBaseIntensity(fixedBaseIntensity).entrySet()) {
+                compoundIntensityBase.put(one.getKey(), one.getValue());
+            }
+        }
 
         for (Map.Entry<Compound, Double> one: compoundIntensityBase.entrySet()) {
             log.info("Compound Intensity Base: {} / Base Intensity: {}", one.getKey(), one.getValue());

@@ -24,6 +24,8 @@ import jp.ac.tohoku.ecei.sb.metabolomeqc.basiccorrector.helper.BadInjectionFinde
 import jp.ac.tohoku.ecei.sb.metabolomeqc.cli.commands.CorrectionCommand;
 import org.kohsuke.args4j.Option;
 
+import java.io.File;
+
 /**
  * Created by yasu on 15/08/05.
  */
@@ -32,8 +34,11 @@ public class LinearCorrectionCommand extends CorrectionCommand {
     @Option(name = "-bad-threshold", usage = "The number of zero intensity counts")
     int badQCThreshold = BadInjectionFinder.DEFAULT_BAD_SAMPLE_THRESHOLD;
 
+    @Option(name = "-fixed-base-intensity", usage = "Fixed base intensity value")
+    File fixedBaseIntensity = new File("");
+
     @Override
     public LoggingIntensityCorrector getCorrector() {
-        return new LinearIntensityCorrector(badQCThreshold);
+        return new LinearIntensityCorrector(badQCThreshold, fixedBaseIntensity);
     }
 }
