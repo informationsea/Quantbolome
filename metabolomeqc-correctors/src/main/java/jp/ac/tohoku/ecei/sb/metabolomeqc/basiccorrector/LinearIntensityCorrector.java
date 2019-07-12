@@ -55,6 +55,10 @@ public class LinearIntensityCorrector extends IntensityCorrectorWithBadSamples {
         Map<Compound, Double> compoundIntensityBase = GlobalQCMedianCalculator.calcGlobalQCMedian(original, badInjections);
         Map<Injection, NeighboringGlobalQCFinder.NeighboringGlobalQC> neighboringSQC = NeighboringGlobalQCFinder.findNeighboringSQC(original, badInjections);
 
+        for (Map.Entry<Compound, Double> one: compoundIntensityBase.entrySet()) {
+            log.info("Compound Intensity Base: {} / Base Intensity: {}", one.getKey(), one.getValue());
+        }
+
         // Main Correction
         IntensityMatrix corrected = new IntensityMatrixImpl(original.getSize()[0], normalSamples.size());
         corrected.setRowKeys(original.getRowKeys());
